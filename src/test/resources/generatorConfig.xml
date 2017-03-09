@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
+<generatorConfiguration >
+  <!-- <context id="context1" targetRuntime="Ibatis2Java5"> -->
+  <context id="context1" targetRuntime="MyBatis3">
+  	<plugin type="org.mybatis.generator.plugins.ToStringPlugin"></plugin>
+    <plugin type="org.mybatis.generator.plugins.EqualsHashCodePlugin"></plugin>
+    <plugin type="com.istock.generate.plugin.TopSerializablePlugin"></plugin>
+    <!-- DAO的interface生成,加上一个父类。因为有BaseMapper，所以只要加上这个父接口即可 -->
+    <plugin type="com.istock.generate.plugin.MybatisPaginationPlugin">
+        <property name="extends" value="com.istock.base.mybatis.BaseMapper"/>
+    </plugin>
+    
+    <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://localhost:3306/zhu?useUnicode=true&amp;characterEncoding=UTF-8"
+                    userId="root" password="zhu809683500" />
+    <javaModelGenerator targetPackage="com.zhu.model" targetProject="./src/main/java" />
+    <sqlMapGenerator targetPackage="com.zhu.mapper" targetProject="./src/main/java" />
+    <!-- <javaClientGenerator targetPackage="com.senvon.spring.dao" targetProject="springMVC/src/main/java" type="SPRING" /> -->
+    <javaClientGenerator targetPackage="com.zhu.dao" targetProject="./src/main/java" type="XMLMAPPER" />
+    
+    <table schema="zhu" tableName="u_user" domainObjectName="User">
+    	<generatedKey column="ID" sqlStatement="MySql" type="pre"/>
+    </table>
+  </context>
+</generatorConfiguration>
