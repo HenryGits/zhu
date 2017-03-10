@@ -6,8 +6,8 @@ package vrbaidu.top.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.io.*;
+import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ResourceBundle;
@@ -49,11 +49,49 @@ public class FileUtils {
     }
 
     /**
-     * 读取配置文件中的属性(配置文件必须放在classes目录下)
-     * @param configName 配置文件的文件名(不带后缀)
-     * @param propKey 属性的键
-     * @return String
+     * 带buffer缓冲区的IO读写
+     * @param inputFileName
+     * @param outputFileName
+     * @throws IOException
      */
+    public static void readFileByIOBuffer(String inputFileName, String outputFileName) throws IOException {
+        BufferedReader bufferedReader = null;
+        BufferedWriter bufferedWriter = null;
+        long startTime = System.currentTimeMillis();
+        try {
+            bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(inputFileName), "UTF-8"));
+            bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFileName), "UTF-8"));
+            String tmp = null;
+            while ((tmp = bufferedReader.readLine()) != null){
+                bufferedWriter.write(tmp);
+                //写入一个行分隔符。
+                bufferedWriter.newLine();
+            }
+            //刷新该流中的缓冲。将缓冲数据写到目的文件中去。
+            bufferedWriter.flush();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            bufferedWriter.close();
+            bufferedReader.close();
+            logger.info(String.format("来源文件位置====>%s", new File(inputFileName).getAbsolutePath()));
+            logger.info(String.format("写入到的位置====>%s", new File(outputFileName).getAbsolutePath()));
+            logger.info(String.format("文件大小====>%s字节", new File(inputFileName).length()));
+            logger.info(String.format("消耗时间====>%s毫秒", System.currentTimeMillis()-startTime));
+        }
+    }
+
+
+        /**
+         * 读取配置文件中的属性(配置文件必须放在classes目录下)
+         * @param configName 配置文件的文件名(不带后缀)
+         * @param propKey 属性的键
+         * @return String
+         */
     public String getProperty(String configName, String propKey) {
         return ResourceBundle.getBundle(configName).getString(propKey);
     }
@@ -107,8 +145,72 @@ public class FileUtils {
         }
     }
 
+    /**
+     * 将一个文件的所有内容拷贝到另一个文件中。
+     * 首先创建一个 Buffer，然后从源文件中将数据读到这个缓冲区中，然后将缓冲区写入目标文件。
+     * 程序不断重复 — 读、写、读、写 — 直到源文件结束。
+     * @param inputFileName 源文件的位置
+     * @param outputFileName 写入文件的位置
+     */
+    public static void readAndWriterByNIO(String inputFileName, String outputFileName) throws IOException {
+        // 获取源文件和目标文件的输入输出流
+        FileInputStream fins = null;
+        FileOutputStream fous = null;
+        ByteBuffer buffer = null;
+        FileChannel fcins = null;
+        FileChannel fcous = null;
+        long size = 0;
+        long startTime = System.currentTimeMillis();
+        try {
+            fins = new FileInputStream(inputFileName);
+            fous = new FileOutputStream(outputFileName);
+            // 获取输入输出通道
+            fcins = fins.getChannel();
+            fcous = fous.getChannel();
+
+            //获取到的文件或通道大小
+            size = fcins.size();
+            // 创建缓冲区
+            buffer = ByteBuffer.allocate(1024);
+
+            while (true) {
+                // clear方法重设缓冲区，使它可以接受读入的数据
+                buffer.clear();
+
+                // 从输入通道中将数据读到缓冲区
+                int rd = fcins.read(buffer);
+
+                // read方法返回读取的字节数，可能为零，如果该通道已到达流的末尾，则返回-1
+                if (rd == -1) {
+                    break;
+                }
+
+                // flip方法让缓冲区可以将新读入的数据写入另一个通道
+                buffer.flip();
+
+                // 从输出通道中将数据写入缓冲区
+                fcous.write(buffer);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            fcous.close();
+            fcins.close();
+            fins.close();
+            fous.close();
+            logger.info(String.format("来源文件位置====>%s",new File(inputFileName).getAbsolutePath()));
+            logger.info(String.format("写入到的位置====>%s",new File(outputFileName).getAbsolutePath()));
+            logger.info(String.format("文件大小====>%s字节",size));
+            logger.info(String.format("消耗时间====>%s毫秒",System.currentTimeMillis()-startTime));
+        }
+
+    }
+
     public static void main(String[] args) throws IOException {
         //readFileByIO("C:\\var\\log\\psbc\\credit\\mgt.log", "f:\\text.txt");
-        readByChannel(1023,"C:\\\\var\\\\log\\\\psbc\\\\credit\\\\mgt.log");
+        //readByChannel(1023,"C:\\\\var\\\\log\\\\psbc\\\\credit\\\\mgt.log");
+        readAndWriterByNIO("C:\\var\\log\\psbc\\credit\\mgt.log", "f:\\text.txt");
     }
 }
