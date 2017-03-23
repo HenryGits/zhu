@@ -11,14 +11,15 @@
         <property name="extends" value="com.istock.base.mybatis.BaseMapper"/>
     </plugin>
     
-    <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://localhost:3306/zhu?useUnicode=true&amp;characterEncoding=UTF-8"
+    <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://localhost:3306/i_wenyiba_com?useUnicode=true&amp;characterEncoding=UTF-8"
                     userId="root" password="zhu809683500" />
-    <javaModelGenerator targetPackage="com.zhu.model" targetProject="./src/main/java" />
-    <sqlMapGenerator targetPackage="com.zhu.mapper" targetProject="./src/main/java" />
+
+    <javaModelGenerator targetPackage="vrbaidu.top.login.model" targetProject="./src/main/java/vrbaidu/top/login" />
+    <sqlMapGenerator targetPackage="vrbaidu.top.login.mapper" targetProject="./src/main/java/vrbaidu/top/login" />
     <!-- <javaClientGenerator targetPackage="com.senvon.spring.dao" targetProject="springMVC/src/main/java" type="SPRING" /> -->
-    <javaClientGenerator targetPackage="com.zhu.dao" targetProject="./src/main/java" type="XMLMAPPER" />
-    
-    <table schema="zhu" tableName="u_user" domainObjectName="User">
+    <javaClientGenerator targetPackage="vrbaidu.top.login.dao" targetProject="./src/main/java/vrbaidu/top/login" type="XMLMAPPER" />
+
+    <table schema="i_wenyiba_com" tableName="u_user_role" domainObjectName="UserRole">
     	<generatedKey column="ID" sqlStatement="MySql" type="pre"/>
     </table>
   </context>

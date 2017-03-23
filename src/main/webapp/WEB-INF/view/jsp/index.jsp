@@ -13,5 +13,6 @@
   <body>
   <h1>hello world!</h1>
   <h2>${message}</h2>
+  <h3>${user.nickname}</h3>
   </body>
 </html>

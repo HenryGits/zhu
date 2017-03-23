@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:p="http://www.springframework.org/schema/p"
-       xmlns:conext="http://www.springframework.org/schema/context"
-       xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:jdbc="http://www.springframework.org/schema/jdbc"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
@@ -18,46 +17,21 @@
        http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
 
     <!-- 注解的自动扫描，表示组件（如：@controler，@Service，@Repository，@Resource等）的扫描 ,注册到spring容器中-->
-    <context:component-scan base-package="vrbaidu.top.*.service"/>
-
-    <!-- 注解配置事务开始 -->
-    <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-        <property name="dataSource" ref="dataSource"/>
-    </bean>
-    <!-- 注解配置事务结束 -->
-
-    <aop:config>
-        <aop:advisor advice-ref="txAdvice" pointcut="execution(* vrbaidu.top.*.service.*.*(..))" />
-    </aop:config>
-
-    <tx:advice id="txAdvice" transaction-manager="txManager">
-        <tx:attributes>
-            <!-- 传播行为REQUIRED时，有实物就是用但钱事务，没有就自动创建一个新的事务 -->
-            <tx:method name="save*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
-            <tx:method name="insert*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
-            <tx:method name="add*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
-            <tx:method name="create*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
-            <tx:method name="delete*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
-            <tx:method name="update*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
-            <!-- SUPPORTS有事务就支持事务，没有就没有 -->
-            <tx:method name="find*" propagation="SUPPORTS" read-only="true" />
-            <tx:method name="select*" propagation="SUPPORTS" read-only="true" />
-            <tx:method name="get*" propagation="SUPPORTS" read-only="true" />
-        </tx:attributes>
-    </tx:advice>
+    <context:component-scan base-package="vrbaidu.top.**.service.impl"/>
 
     <!-- 开启aop监控  只对当前配置有效 -->
     <aop:aspectj-autoproxy proxy-target-class="true"/>
 
-    <!-- 99框架赋值写法有问题，web请求可以注入属性文件的值，代码测试无法注入，导致junit测试Dao层报加载配置文件出错 -->
-    <bean id="propertyConfigurer"
-          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-        <property name="locations">
-            <list>
-                <value>classpath:jdbc.properties</value>
-            </list>
-        </property>
-    </bean>
+    <!-- 加载数据库配置文件 (因为有多个读取数据库的配置，故加ignore-unresolvable="true") -->
+    <context:property-placeholder location="classpath:jdbc.properties" ignore-unresolvable="true"/>
+    <!--<bean id="propertyConfigurer"-->
+    <!--class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">-->
+    <!--<property name="locations">-->
+    <!--<list>-->
+    <!--<value>classpath*:jdbc.properties</value>-->
+    <!--</list>-->
+    <!--</property>-->
+    <!--</bean>-->
 
     <!-- 数据源配置, 使用 Druid 数据库连接池 -->
     <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
@@ -97,11 +71,32 @@
         <!-- <property name="typeAliasesPackage" value="com.taotao.pojo"></property> -->
     </bean>
 
-    <!-- 将mybatis实现的接口注入到spring容器中 -->
-    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-    <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
-    <property name="basePackage" value="vrbaidu.top.*.dao"/>
+
+    <!-- 注解配置事务开始 -->
+    <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
     </bean>
+    <!-- 注解配置事务结束 -->
+
+    <aop:config>
+        <aop:advisor advice-ref="txAdvice" pointcut="execution(* vrbaidu.top.*.service.*.*(..))" />
+    </aop:config>
+
+    <tx:advice id="txAdvice" transaction-manager="txManager">
+        <tx:attributes>
+            <!-- 传播行为REQUIRED时，有实物就是用但钱事务，没有就自动创建一个新的事务 -->
+            <tx:method name="save*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+            <tx:method name="insert*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+            <tx:method name="add*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+            <tx:method name="create*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+            <tx:method name="delete*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+            <tx:method name="update*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
+            <!-- SUPPORTS有事务就支持事务，没有就没有 -->
+            <tx:method name="find*" propagation="SUPPORTS" read-only="true" />
+            <tx:method name="select*" propagation="SUPPORTS" read-only="true" />
+            <tx:method name="get*" propagation="SUPPORTS" read-only="true" />
+        </tx:attributes>
+    </tx:advice>
 
     <!-- 自定义Realm -->
     <bean id="myRealm" class="vrbaidu.top.userRealm.MyRealm" />
