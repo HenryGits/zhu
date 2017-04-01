@@ -1,16 +1,9 @@
 package vrbaidu.top.zookeeper.demo.zkClient;
 
-import com.dongnao.zookeeper.MyZkSerializer;
-import com.dongnao.zookeeper.Student;
-import org.I0Itec.zkclient.IZkChildListener;
-import org.I0Itec.zkclient.IZkDataListener;
-import org.I0Itec.zkclient.IZkStateListener;
 import org.I0Itec.zkclient.ZkClient;
 import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.Watcher;
-
-import java.io.IOException;
-import java.util.List;
+import vrbaidu.top.zookeeper.MyZkSerializer;
+import vrbaidu.top.zookeeper.Student;
 
 /**
  * @author qingyin
@@ -34,7 +27,7 @@ public class ZkClientDemo1 {
     }
 
     public static void main(String[] args) {
-        Student stu=Student.build().setPhone("123").setName("root");
+        Student stu= Student.build().setPhone("123").setName("root");
         System.out.println(stu.getName());
     //    initData();
         //触发指定path数据修改、删除事件

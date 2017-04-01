@@ -6,9 +6,9 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
 	http://www.springframework.org/schema/beans/spring-beans.xsd 
 	http://www.springframework.org/schema/context 
-	http://www.springframework.org/schema/context/spring-context-4.0.xsd 
+	http://www.springframework.org/schema/context/spring-context.xsd
 	http://www.springframework.org/schema/mvc
-	http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
+	http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
     <!-- 激活@Controller模式 -->
     <mvc:annotation-driven/>
@@ -19,20 +19,22 @@
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
 
-    <!-- 告知静态文件不要拦截，直接访问，这种方式下面那种要好在可以访问web-info下的资源 -->
-    <mvc:resources location="/WEB-INF/static/" mapping="/**/**"/>
-    <mvc:resources location="/WEB-INF/view/" mapping="/**/**"/>
-
     <!-- 配置默认servlet静态资源访问 -->
-    <!-- <mvc:default-servlet-handler/> -->
+    <!--<mvc:default-servlet-handler/>-->
 
     <!-- 配置视图解析器，把控制器的逻辑视频映射为真正的视图 -->
     <!-- /WEB-INF/jsp/index.jsp -->
     <bean class="org.springframework.web.servlet.view.UrlBasedViewResolver">
         <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
-        <property name="prefix" value="/WEB-INF/view/jsp" />
+        <property name="prefix" value="/WEB-INF/view/jsp/" />
         <property name="suffix" value=".jsp"/>
     </bean>
+
+    <!-- 告知静态文件不要拦截，直接访问，这种方式下面那种要好在可以访问web-info下的资源 -->
+    <mvc:resources mapping="/static/**" location="/WEB-INF/static/"/>
+    <!--<mvc:resources mapping="/js/**" location="/WEB-INF/static/js/"/>
+    <mvc:resources mapping="/fonts/**" location="/WEB-INF/static/fonts/"/>-->
+    <mvc:resources mapping="/images/**" location="/WEB-INF/static/images/"/>
 
     <!-- 定义文件上传解析器 -->
     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">

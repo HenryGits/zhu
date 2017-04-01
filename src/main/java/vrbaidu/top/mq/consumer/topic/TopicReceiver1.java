@@ -1,11 +1,11 @@
 package vrbaidu.top.mq.consumer.topic;
 
+import org.springframework.stereotype.Component;
+
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
-
-import org.springframework.stereotype.Component;
 
 
 /**

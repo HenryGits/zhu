@@ -10,18 +10,13 @@
 <html lang="zh-CN">
   <head>
     <title>小demo</title>
-    <link rel="stylesheet" charset="utf-8" href="${pageContext.request.contextPath}/css/bootstrap.min.css"/>
-      <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
-      <%--<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css"
-            integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">--%>
+    <link rel="stylesheet" charset="utf-8" href="${pageContext.request.contextPath}/static/bootStrap-3.7/css/bootstrap.min.css"/>
   </head>
   <body>
-  <h2>${message}</h2>
-  <h3>${user.nickname}</h3>
   <div class="container">
     <h1>hello world!</h1>
-    <form action="queueSender">
-      <input name="message" value="测试mq队列" class="form-control">
+    <form action="doLogin" method="post">
+      <input name="nickname" value="测试mq队列" class="form-control">
       <input type="submit" value="发送队列" class="btn btn-success">
     </form>
   </div>
@@ -38,6 +33,6 @@
       </table>
   </div>
 
-  <script rel="script" type="text/javascript" src="${pageContext.request.contextPath}/js/bootstrap.min.js"/>
+  <script rel="script" type="text/javascript" src="${pageContext.request.contextPath}/static/bootStrap-3.7/js/bootstrap.min.js"/>
   </body>
 </html>

@@ -2,7 +2,8 @@ package vrbaidu.top.redisCache.service;
 
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.JedisCluster;
-import vrbaidu.top.redisCache.dao.CommonMapper;
+import vrbaidu.top.login.dao.UserMapper;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -10,7 +11,7 @@ import java.lang.reflect.Method;
  * redis缓存实现类
  * CommonDaoCacheHandler类只负责CommonMapper接口的方法的缓存处理
  */
-@FilterMethodName(methodName = "query1,query2,query3", type = CommonMapper.class)
+@FilterMethodName(methodName = "selectByPrimaryKey", type = UserMapper.class)
 @Component
 public class CommonDaoCacheHandler implements CacheHandler {
 

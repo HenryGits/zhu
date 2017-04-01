@@ -22,9 +22,9 @@ public class DataSourceExchange {
         //获取包名用于区分不同数据源
         String whichDataSource = aClass.getName().substring(25, aClass.getName().lastIndexOf("."));
         if ("ssmone".equals(whichDataSource)) {
-            DataSourceHolder.setDataSources(Constants.DATASOURCE_ONE);
+            DataSourceHolder.setDataSources("datasource1");
         } else {
-            DataSourceHolder.setDataSources(Constants.DATASOURCE_TWO);
+            DataSourceHolder.setDataSources("datasource2");
         }
 
     }

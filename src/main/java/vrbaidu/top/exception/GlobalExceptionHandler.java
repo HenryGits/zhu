@@ -26,27 +26,28 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BusinessException.class)
     @ResponseBody
     public void handleBizExp(HttpServletRequest request ,Exception e){
-        logger.info("系统异常:"+e.getMessage());
+        logger.debug("系统异常:"+e.getMessage());
         request.getSession(true).setAttribute(EXPTION_MSG_KEY, e.getMessage());
     }
 
     @ExceptionHandler(IOException.class)
     @ResponseBody
     public void handleIOExp(HttpServletRequest request ,Exception e){
-        logger.info("IO异常:"+e.getMessage());
+        logger.debug("IO异常:"+e.getMessage());
         request.getSession(true).setAttribute(EXPTION_MSG_KEY, e.getMessage());
     }
 
     @ExceptionHandler(ArrayIndexOutOfBoundsException.class)
     @ResponseBody
     public void handleArrayExp(HttpServletRequest request ,Exception e){
-        logger.info("数组异常:"+e.getMessage());
+        logger.debug("数组异常:"+e.getMessage());
         request.getSession(true).setAttribute(EXPTION_MSG_KEY, e.getMessage());
     }
 
     @ExceptionHandler(SQLException.class)
+    @ResponseBody
     public ModelAndView handSqlExp(Exception e){
-        logger.info("数据库异常:"+ e.getMessage());
+        logger.debug("数据库异常:"+ e.getMessage());
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("message", e.getMessage());
         modelAndView.setViewName("sql_error");

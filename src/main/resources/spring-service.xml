@@ -8,7 +8,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context
-       http://www.springframework.org/schema/context/spring-context.xsd
+	   http://www.springframework.org/schema/context/spring-context-4.0.xsd
        http://www.springframework.org/schema/tx
        http://www.springframework.org/schema/tx/spring-tx.xsd
        http://www.springframework.org/schema/aop
@@ -16,8 +16,18 @@
        http://www.springframework.org/schema/jdbc
        http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
 
+    <!--    <import resource="classpath:META-INF/cxf/cxf.xml"/>
+        <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
+        &lt;!&ndash; 自动扫描webService &ndash;&gt;
+        <context:component-scan base-package="com.thirdAPI.cxf" />
+        &lt;!&ndash; 定义webservice的发布接口  &ndash;&gt;
+        <jaxws:endpoint
+                implementor="#helloWorld"
+                address="/HelloWorld"
+        ></jaxws:endpoint>-->
+
     <!-- 注解的自动扫描，表示组件（如：@controler，@Service，@Repository，@Resource等）的扫描 ,注册到spring容器中-->
-    <context:component-scan base-package="vrbaidu.top.**.service.impl"/>
+    <context:component-scan base-package="vrbaidu.top.*.service.impl"/>
 
     <!-- 开启aop监控  只对当前配置有效 -->
     <aop:aspectj-autoproxy proxy-target-class="true"/>
@@ -62,6 +72,18 @@
         <property name="filters" value="stat" />
     </bean>
 
+    <!-- 多数据源切换 -->
+    <!--<bean id="dataSource" class="com.thirdAPI.util.DynamicDataSource">
+        <property name="targetDataSources">
+            <map key-type="java.lang.String">
+                <entry key="ssm1DataSource" value-ref="ssm1DataSource"/>
+                <entry key="ssm2DataSource" value-ref="ssm2DataSource"/>
+            </map>
+        </property>
+        &lt;!&ndash;默认数据源&ndash;&gt;
+        <property name="defaultTargetDataSource" ref="ssm1DataSource"/>
+    </bean>-->
+
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="dataSource"/>
         <!-- 配置映射文件的位置，如果配置文件与mapper接口在同一个位置，可以不写 -->
@@ -78,10 +100,10 @@
     </bean>
     <!-- 注解配置事务结束 -->
 
+    <!-- 配置事务切面 (定义在service包或者子包里的任意类的任意方法的执行)-->
     <aop:config>
-        <aop:advisor advice-ref="txAdvice" pointcut="execution(* vrbaidu.top.*.service.*.*(..))" />
+        <aop:advisor advice-ref="txAdvice" pointcut="execution(public * vrbaidu.top.*.service.*.*(..))" />
     </aop:config>
-
     <tx:advice id="txAdvice" transaction-manager="txManager">
         <tx:attributes>
             <!-- 传播行为REQUIRED时，有实物就是用但钱事务，没有就自动创建一个新的事务 -->
@@ -98,8 +120,11 @@
         </tx:attributes>
     </tx:advice>
 
+    <!-- 注解事务 -->
+    <tx:annotation-driven transaction-manager="txManager"/>
+
     <!-- 自定义Realm -->
-    <bean id="myRealm" class="vrbaidu.top.userRealm.MyRealm" />
+    <bean id="myRealm" class="vrbaidu.top.thirdAPI.shiro.MyRealm" />
 
     <!-- 安全管理器 -->
     <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
@@ -117,7 +142,9 @@
         <!-- Shiro连接约束配置,即过滤链的定义 -->
         <property name="filterChainDefinitions">
             <value>
+                <!--anon 表示匿名访问，不需要认证以及授权-->
                 /login=anon
+                <!--authc表示需要认证 没有进行身份认证是不能进行访问的-->
                 /admin/**=authc
             </value>
         </property>

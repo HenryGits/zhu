@@ -2,13 +2,8 @@ package vrbaidu.top.zookeeper;
 
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
-import org.apache.curator.framework.api.CuratorEvent;
-import org.apache.curator.framework.api.CuratorListener;
 import org.apache.curator.framework.api.CuratorWatcher;
-import org.apache.curator.framework.api.transaction.CuratorTransaction;
 import org.apache.curator.framework.api.transaction.CuratorTransactionResult;
-import org.apache.curator.framework.imps.CuratorFrameworkState;
-import org.apache.curator.framework.recipes.cache.NodeCache;
 import org.apache.curator.framework.recipes.cache.PathChildrenCache;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;
@@ -18,7 +13,6 @@ import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.data.Stat;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * @author parker

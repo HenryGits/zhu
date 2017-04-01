@@ -33,8 +33,8 @@ public class UserDao implements UserMapper {
     }
 
     @Override
-    public int insert(User record) {
-        return userMapper.insert(record);
+    public void insert(User record) {
+        userMapper.insert(record);
     }
 
     @Override

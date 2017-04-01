@@ -4,7 +4,6 @@ import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.*;
@@ -59,7 +58,7 @@ public class DistributeLockDemo implements Watcher{
     }
 
     /**
-     * 获取多的方法
+     * 获取锁的方法
      */
     public void lock(){
         if(tryLock()){

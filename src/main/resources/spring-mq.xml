@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:jms="http://www.springframework.org/schema/jms"
+       xmlns:amq="http://activemq.apache.org/schema/core"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd
+    http://www.springframework.org/schema/jms
+    http://www.springframework.org/schema/jms/spring-jms.xsd
+    http://activemq.apache.org/schema/core
+    http://activemq.apache.org/schema/core/activemq-core.xsd" default-autowire="byName">
+
+    <context:property-placeholder location="classpath:jms.properties"/>
+
+    <!-- activeMQ的连接工厂 -->
+    <bean id="amqConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+        <property name="brokerURL" value="${activemq.url}"/>
+        <property name="userName" value="${activemq.userName}"/>
+        <property name="password" value="${activemq.passWord}"/>
+        <property name="sendTimeout" value="${activemq.timeOut}"/>
+        <!--<property name="maxReconnectAttempts" value="${activemq.maxReconnectAttempts}"/>-->
+        <!--<property name="maxReconnectDelay" value="${activemq.maxReconnectDelay}"/>-->
+    </bean>
+
+    <!-- Spring Caching连接工厂 -->
+    <!-- Spring用于管理真正的ConnectionFactory的ConnectionFactory -->
+    <bean id="connectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
+        <!-- 目标ConnectionFactory对应真实的可以产生JMS Connection的ConnectionFactory -->
+        <property name="targetConnectionFactory" ref="amqConnectionFactory"></property>
+        <!-- Session缓存数量 -->
+        <property name="sessionCacheSize" value="100" />
+    </bean>
+
+    <!-- (消息生产者)定义JmsTemplate的Queue类型 -->
+    <bean id="jmsQueueTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <!-- 这个connectionFactory对应的是我们定义的Spring提供的那个ConnectionFactory对象 -->
+        <constructor-arg ref="connectionFactory" />
+        <!-- 非pub/sub模型（发布/订阅），即队列模式 -->
+        <property name="pubSubDomain" value="false" />
+    </bean>
+    <!-- (消息消费者)定义Queue监听器 -->
+    <jms:listener-container destination-type="queue" container-type="default"
+                            connection-factory="connectionFactory" acknowledge="auto">
+        <jms:listener destination="${activemq.message.queue1}" ref="queueReceiver1"/>
+        <jms:listener destination="${activemq.message.queue2}" ref="queueReceiver2"/>
+    </jms:listener-container>
+
+    <bean id="queueReceiver1" class="vrbaidu.top.mq.consumer.queue.QueueReceiver1"/>
+    <bean id="queueReceiver2" class="vrbaidu.top.mq.consumer.queue.QueueReceiver2"/>
+    <bean id="topicReceiver1" class="vrbaidu.top.mq.consumer.topic.TopicReceiver1"/>
+    <bean id="topicReceiver2" class="vrbaidu.top.mq.consumer.topic.TopicReceiver2"/>
+
+    <!-- (消息生产者)定义JmsTemplate的Topic类型 -->
+    <bean id="jmsTopicTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <!-- 这个connectionFactory对应的是我们定义的Spring提供的那个ConnectionFactory对象 -->
+        <constructor-arg ref="connectionFactory" />
+        <!-- pub/sub模型（发布/订阅） -->
+        <property name="pubSubDomain" value="true" />
+    </bean>
+
+    <!-- (消息消费者)定义Topic监听器 -->
+    <jms:listener-container destination-type="topic" container-type="default"
+                            connection-factory="connectionFactory" acknowledge="auto">
+        <jms:listener destination="${activemq.message.topic1}" ref="topicReceiver1"/>
+        <jms:listener destination="${activemq.message.topic2}" ref="topicReceiver2"/>
+    </jms:listener-container>
+    <!-- 消息消费者 end -->
+</beans>

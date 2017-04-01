@@ -24,8 +24,8 @@ public class RedisConTest {
     private LoginIService loginService;
 
     @Test
-    public void  conn(){
-        Jedis jedis = new Jedis("192.168.1.128", 6379, 0);
+    public void conn() {
+        Jedis jedis = new Jedis("192.168.1.125", 6379, 0);
         jedis.auth("zhu809683500");
         jedis.set("name", "李四");
         System.out.println(jedis.get("name"));
@@ -37,20 +37,23 @@ public class RedisConTest {
     public void insert() {
         User user = new User();
         long startDate = System.currentTimeMillis();
-        for (int i = 0; i < 30; i++) {
-            new Thread(new Runnable() {
+        for (int i = 0; i < 1; i++) {
+           new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    user.setNickname("name是"+ new Random(8000).nextInt());
-                    user.setPswd("密码是"+ new Random(80000).nextFloat());
-                    user.setEmail("邮箱是"+new Random(800000).nextDouble());
-                    user.setStatus(1L);
-                    user.setCreateTime(new Date());
-                    user.setLastLoginTime(new Date());
-                    loginService.regUser(user);
+                    for (int i = 0; i < 30; i++) {
+                        user.setId(Math.abs(new Random().nextLong()));
+                        user.setNickname("name是" + new Random().nextInt(8000));
+                        user.setPswd("密码是" + Math.random());
+                        user.setEmail("邮箱是" + new Random().nextDouble());
+                        user.setStatus(1L);
+                        user.setCreateTime(new Date());
+                        user.setLastLoginTime(new Date());
+                        loginService.insertReg(user);
+                    }
                 }
-            }).start();
+            }).run();
         }
-        System.out.println(System.currentTimeMillis()-startDate);
+        System.out.println(String.format("消耗时间====>%s毫秒", System.currentTimeMillis() - startDate));
     }
 }
