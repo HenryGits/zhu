@@ -1,0 +1,17 @@
+/**铺满屏幕**/
+html body{
+    margin: 0;
+    padding: 0;
+    background: url('../images/201704011549.jpg');
+    repeat: no-repeat;
+    background-attachment:fixed;
+    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/201704011549.jpg', sizingMethod='scale');
+    -ms-filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/201704011549.jpg', sizingMethod='scale');
+    background-size: cover;
+    -moz-background-size: cover;
+    -webkit-background-size: cover;
+}
+
+.container-fluid .form_control{
+    margin: 25% 40%;
+}
