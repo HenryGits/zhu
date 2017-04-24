@@ -3,13 +3,9 @@ package vrbaidu.top.util;
 import org.aspectj.lang.JoinPoint;
 
 /**
- * Function:拦截器方法
- *
- * @author chenjiec
- *         Date: 2017/1/3 上午12:34
- * @since JDK 1.7
+ * 多数据源AOP切面编程实现。
  */
-public class DataSourceExchange {
+public class DataSourceAspect {
 
     /**
      * @param point
