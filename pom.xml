@@ -47,7 +47,7 @@
         <poi.version>3.9</poi.version>
         <aspectj.version>1.7.0</aspectj.version>
         <lucene.version>6.1.0</lucene.version>
-        <shiro.version>1.5.2</shiro.version>
+        <shiro.version>1.6.0</shiro.version>
         <jetty.version>6.1.9</jetty.version>
     </properties>
 
