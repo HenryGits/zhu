@@ -42,7 +42,7 @@
 
     <!-- 版本配置 -->
     <properties>
-        <spring.version>4.2.5.RELEASE</spring.version>
+        <spring.version>5.3.19</spring.version>
         <generator.version>1.0.0-SNAPSHOT</generator.version>
         <poi.version>3.9</poi.version>
         <aspectj.version>1.7.0</aspectj.version>
